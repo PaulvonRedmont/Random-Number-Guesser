@@ -36,6 +36,18 @@
             font-size: 18px;
             color: #333;
         }
+
+        #time {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        #guesses {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -44,24 +56,40 @@
     <input type="text" id="userGuess">
     <button onclick="checkGuess()">Check Guess</button>
     <p id="result"></p>
+    <p id="time"></p>
+    <p id="guesses"></p>
 
     <script>
         var correctNumber = Math.floor(Math.random() * 1000000000000) + 1;
+        var startTime = null;
+        var guessCount = 0;
 
         function checkGuess() {
             var userGuess = parseInt(document.getElementById("userGuess").value);
             var resultElement = document.getElementById("result");
+            var timeElement = document.getElementById("time");
+            var guessesElement = document.getElementById("guesses");
 
             if (isNaN(userGuess) || userGuess < 1 || userGuess > 1000000000000) {
                 resultElement.innerHTML = "Please enter a valid number between 1 and 1 trillion.";
+                return;
+            }
+
+            if (startTime === null) {
+                startTime = Date.now(); // Start the timer on the first guess
+            }
+
+            guessCount++; // Increment guess count
+
+            if (userGuess === correctNumber) {
+                var timeTaken = ((Date.now() - startTime) / 1000).toFixed(2); // Time in seconds
+                resultElement.innerHTML = "Congratulations! You guessed the correct number.";
+                timeElement.innerHTML = "Time taken: " + timeTaken + " seconds.";
+                guessesElement.innerHTML = "Total guesses: " + guessCount;
+            } else if (userGuess < correctNumber) {
+                resultElement.innerHTML = "Your guess is too low.";
             } else {
-                if (userGuess === correctNumber) {
-                    resultElement.innerHTML = "Congratulations! You guessed the correct number.";
-                } else if (userGuess < correctNumber) {
-                    resultElement.innerHTML = "Your guess is too low.";
-                } else {
-                    resultElement.innerHTML = "Your guess is too high.";
-                }
+                resultElement.innerHTML = "Your guess is too high.";
             }
         }
     </script>
