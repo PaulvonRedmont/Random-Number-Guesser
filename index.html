@@ -63,11 +63,21 @@
         var correctNumber = Math.floor(Math.random() * 1000000000000) + 1;
         var startTime = null;
         var guessCount = 0;
+        var timerInterval;
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(updateTime, 100); // Update every 100 ms
+        }
+
+        function updateTime() {
+            var elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2); // Time in seconds
+            document.getElementById("time").innerHTML = "Time elapsed: " + elapsedTime + " seconds.";
+        }
 
         function checkGuess() {
             var userGuess = parseInt(document.getElementById("userGuess").value);
             var resultElement = document.getElementById("result");
-            var timeElement = document.getElementById("time");
             var guessesElement = document.getElementById("guesses");
 
             if (isNaN(userGuess) || userGuess < 1 || userGuess > 1000000000000) {
@@ -76,16 +86,17 @@
             }
 
             if (startTime === null) {
-                startTime = Date.now(); // Start the timer on the first guess
+                startTimer(); // Start the timer on the first guess
             }
 
             guessCount++; // Increment guess count
+            guessesElement.innerHTML = "Total guesses: " + guessCount;
 
             if (userGuess === correctNumber) {
-                var timeTaken = ((Date.now() - startTime) / 1000).toFixed(2); // Time in seconds
+                clearInterval(timerInterval); // Stop the timer
+                var totalTime = ((Date.now() - startTime) / 1000).toFixed(2); // Time in seconds
                 resultElement.innerHTML = "Congratulations! You guessed the correct number.";
-                timeElement.innerHTML = "Time taken: " + timeTaken + " seconds.";
-                guessesElement.innerHTML = "Total guesses: " + guessCount;
+                document.getElementById("time").innerHTML = "Total time taken: " + totalTime + " seconds.";
             } else if (userGuess < correctNumber) {
                 resultElement.innerHTML = "Your guess is too low.";
             } else {
