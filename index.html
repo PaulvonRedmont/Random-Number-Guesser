@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!dont even think about it, kid>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -27,16 +26,13 @@
     <h1>Number Guessing Game</h1>
     <p>Enter a number between 1 and 1 trillion:</p>
     <input type="text" id="userGuess">
-    <button onclick="checkGuess()">Check Guess</button>
+    <button id="checkGuessBtn">Check Guess</button>
     <p id="result"></p>
     <p id="time"></p>
     <p id="guesses"></p>
 
     <script>
         (function() {
-            // dw abt this bit everyone
-            console.log("f*ck you, dimitri");
-
             var correctNumber = Math.floor(Math.random() * 1000000000000) + 1;
             var startTime = null;
             var guessCount = 0;
@@ -52,7 +48,7 @@
                 document.getElementById("time").innerHTML = "Time elapsed: " + elapsedTime + " seconds.";
             }
 
-            window.checkGuess = function() {
+            function checkGuess() {
                 var userGuess = parseInt(document.getElementById("userGuess").value);
                 var resultElement = document.getElementById("result");
                 var guessesElement = document.getElementById("guesses");
@@ -72,15 +68,22 @@
                 if (userGuess === correctNumber) {
                     clearInterval(timerInterval);
                     var totalTime = ((Date.now() - startTime) / 1000).toFixed(2);
-                    resultElement.innerHTML = "Congratulations! You guessed the correct number.";
-                    document.getElementById("time").innerHTML = "Total time taken: " + totalTime + " seconds.";
+                    if (totalTime < 3) {
+                        resultElement.innerHTML = "Hacking detected. Please reload the tab.";
+                    } else {
+                        resultElement.innerHTML = "Congratulations! You guessed the correct number.";
+                        document.getElementById("time").innerHTML = "Total time taken: " + totalTime + " seconds.";
+                    }
+                } else if (userGuess === 911) {
+                    resultElement.innerHTML = "Never forget.";
                 } else if (userGuess < correctNumber) {
                     resultElement.innerHTML = "Your guess is too low.";
                 } else {
                     resultElement.innerHTML = "Your guess is too high.";
                 }
-            };
+            }
 
+            document.getElementById("checkGuessBtn").onclick = checkGuess;
             document.getElementById("userGuess").addEventListener("keypress", function(event) {
                 if (event.key === "Enter") {
                     checkGuess();
