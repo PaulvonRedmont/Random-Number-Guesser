@@ -9,50 +9,22 @@
             font-family: Arial, sans-serif;
             text-align: center;
         }
-
-        h1 {
-            color: #333;
-        }
-
+        h1 { color: #333; }
         input[type="text"] {
-            padding: 8px;
-            font-size: 16px;
+            padding: 8px; font-size: 16px;
         }
-
         button {
-            padding: 8px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            cursor: pointer;
+            padding: 8px 20px; background-color: #007bff; color: #fff; border: none; cursor: pointer;
         }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        #result {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #333;
-        }
-
-        #time {
-            margin-top: 10px;
-            font-size: 16px;
-            color: #555;
-        }
-
-        #guesses {
-            margin-top: 10px;
-            font-size: 16px;
-            color: #555;
+        button:hover { background-color: #0056b3; }
+        #result, #time, #guesses {
+            margin-top: 10px; font-size: 16px; color: #555;
         }
     </style>
 </head>
 <body>
     <h1>Number Guessing Game</h1>
-    <p>Enter a number between 1 and 1 trillion (for reference, 1 trillion has 12 zeros):</p>
+    <p>Enter a number between 1 and 1 trillion:</p>
     <input type="text" id="userGuess">
     <button onclick="checkGuess()">Check Guess</button>
     <p id="result"></p>
@@ -60,56 +32,57 @@
     <p id="guesses"></p>
 
     <script>
-        var correctNumber = Math.floor(Math.random() * 1000000000000) + 1;
-        var startTime = null;
-        var guessCount = 0;
-        var timerInterval;
+        (function() {
+            var correctNumber = Math.floor(Math.random() * 1000000000000) + 1;
+            var startTime = null;
+            var guessCount = 0;
+            var timerInterval;
 
-        function startTimer() {
-            startTime = Date.now();
-            timerInterval = setInterval(updateTime, 100); // Update every 100 ms
-        }
-
-        function updateTime() {
-            var elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2); // Time in seconds
-            document.getElementById("time").innerHTML = "Time elapsed: " + elapsedTime + " seconds.";
-        }
-
-        function checkGuess() {
-            var userGuess = parseInt(document.getElementById("userGuess").value);
-            var resultElement = document.getElementById("result");
-            var guessesElement = document.getElementById("guesses");
-
-            if (isNaN(userGuess) || userGuess < 1 || userGuess > 1000000000000) {
-                resultElement.innerHTML = "Please enter a valid number between 1 and 1 trillion.";
-                return;
+            function startTimer() {
+                startTime = Date.now();
+                timerInterval = setInterval(updateTime, 100);
             }
 
-            if (startTime === null) {
-                startTimer(); // Start the timer on the first guess
+            function updateTime() {
+                var elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
+                document.getElementById("time").innerHTML = "Time elapsed: " + elapsedTime + " seconds.";
             }
 
-            guessCount++; // Increment guess count
-            guessesElement.innerHTML = "Total guesses: " + guessCount;
+            window.checkGuess = function() {
+                var userGuess = parseInt(document.getElementById("userGuess").value);
+                var resultElement = document.getElementById("result");
+                var guessesElement = document.getElementById("guesses");
 
-            if (userGuess === correctNumber) {
-                clearInterval(timerInterval); // Stop the timer
-                var totalTime = ((Date.now() - startTime) / 1000).toFixed(2); // Time in seconds
-                resultElement.innerHTML = "Congratulations! You guessed the correct number.";
-                document.getElementById("time").innerHTML = "Total time taken: " + totalTime + " seconds.";
-            } else if (userGuess < correctNumber) {
-                resultElement.innerHTML = "Your guess is too low.";
-            } else {
-                resultElement.innerHTML = "Your guess is too high.";
-            }
-        }
+                if (isNaN(userGuess) || userGuess < 1 || userGuess > 1000000000000) {
+                    resultElement.innerHTML = "Please enter a valid number between 1 and 1 trillion.";
+                    return;
+                }
 
-        // Add event listener for the Enter key
-        document.getElementById("userGuess").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                checkGuess();
-            }
-        });
+                if (startTime === null) {
+                    startTimer();
+                }
+
+                guessCount++;
+                guessesElement.innerHTML = "Total guesses: " + guessCount;
+
+                if (userGuess === correctNumber) {
+                    clearInterval(timerInterval);
+                    var totalTime = ((Date.now() - startTime) / 1000).toFixed(2);
+                    resultElement.innerHTML = "Congratulations! You guessed the correct number.";
+                    document.getElementById("time").innerHTML = "Total time taken: " + totalTime + " seconds.";
+                } else if (userGuess < correctNumber) {
+                    resultElement.innerHTML = "Your guess is too low.";
+                } else {
+                    resultElement.innerHTML = "Your guess is too high.";
+                }
+            };
+
+            document.getElementById("userGuess").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    checkGuess();
+                }
+            });
+        })();
     </script>
 </body>
 </html>
